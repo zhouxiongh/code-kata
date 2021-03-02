@@ -6,6 +6,7 @@
 """
 Bloom Filters
 """
+import hashlib
 
 
 class BloomFilter:
@@ -18,20 +19,32 @@ class BloomFilter:
         for i in range(self.k):
             self.bit_array[self._my_hash(item, i)] = 1
 
-    def __contains__(self, item):
+    def contains(self, item):
         for i in range(self.k):
             if not self.bit_array[self._my_hash(item, i)]:
                 return False
         return True
 
     def _my_hash(self, item, i):
-        re = 0
-        for c in item:
-            re *= i
-            re += ord(c)
-        return re % len(self.bit_array)
+        start = 32 // self.k * i
+        end = 32 // self.k * (i+1)
+        md5 = hashlib.md5()
+        md5.update(item.encode('utf-8'))
+        re = md5.hexdigest()[start:end]
+        return int(re, base=16) % len(self.bit_array)
 
 
 if __name__ == '__main__':
-    bloom_filter = BloomFilter(1000, 3)
+    bloom_filter = BloomFilter(100000000, 5)
+    with open('/usr/share/dict/words', 'r') as f:
+        lines = (line.strip() for line in f)
+        for line in lines:
+            bloom_filter.insert(line)
+    word = input('spell check word: ')
+    if not bloom_filter.contains(word):
+        print('typo')
+    else:
+        print('spell right')
+
+
 
