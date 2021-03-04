@@ -6,6 +6,7 @@
 """ 
 Enter module description here
 """
+import re
 import unittest
 from itertools import islice
 
@@ -13,18 +14,24 @@ from itertools import islice
 class CheckOut:
     def __init__(self, pricing_rules):
         self.total = 0
-        self.rules = {'A': {'price': 50, 'special_count': 3,
-                            'special_price': 130},
-                      'B': {'price': 30, 'special_count': 2,
-                            'special_price': 45},
-                      'C': {'price': 20},
-                      'D': {'price': 15}}
-        self.item_count = {'A': 0, 'B': 0, 'C': 0, 'D': 0}
-        self.item_price = {'A': 0, 'B': 0, 'C': 0, 'D': 0}
-        # with open(pricing_rules, 'r') as f:
-        #     lines = (line.strip() for line in f)
-        #     for line in islice(lines, 3, None):
-        #         print(line)
+        self.rules = {}
+        self.item_price = {}
+        self.item_count = {}
+
+        rules_pat = re.compile(r'[\s]\s*')
+        with open(pricing_rules, 'r') as f:
+            lines = (line.strip() for line in f)
+            # rules start at line 3
+            for line in islice(lines, 3, None):
+                words = re.split(rules_pat, line)
+                if len(words) > 2:
+                    self.rules[words[0]] = dict(price=int(words[1]),
+                                                special_count=int(words[2]),
+                                                special_price=int(words[4]),)
+                else:
+                    self.rules[words[0]] = dict(price=int(words[1]))
+                self.item_price[words[0]] = 0
+                self.item_count[words[0]] = 0
 
     def scan(self, item):
         self.item_count[item] += 1
