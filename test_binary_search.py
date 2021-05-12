@@ -8,7 +8,7 @@ Enter module description here
 """
 import unittest
 
-from kata02 import chop
+from binary_search import chop
 
 
 class MyTestCase(unittest.TestCase):
