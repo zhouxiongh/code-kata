@@ -12,6 +12,8 @@ import collections
 
 def word_chain(start, target, bank):
     def valid_mutation(s1, s2):
+        if len(s1) != len(s2):
+            return False
         counter = 0
         for c1, c2 in zip(s1, s2):
             if c1 != c2:
