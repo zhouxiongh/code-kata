@@ -12,7 +12,7 @@ import itertools
 
 def foo(bin_num):
     for i in range(len(bin_num) - 1):
-        if bin_num[i] == 1 and bin_num[i] == bin_num[i + 1]:
+        if bin_num[i] == 1 and bin_num[i + 1] == 1:
             return False
     return True
 
