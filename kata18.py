@@ -21,11 +21,16 @@ class Dependencies:
                 self._dependencies[u].append(dependency)
 
     def dependencies_for(self, u) -> List[str]:
+        return self._dependencies_for(u, u)
+
+    def _dependencies_for(self, u, origin) -> List[str]:
         ans = []
         for dependency in self._dependencies[u]:
+            if dependency == origin:
+                raise TypeError
             if dependency not in ans:
                 ans.append(dependency)
                 if dependency in self._dependencies:
-                    ans.extend(self.dependencies_for(dependency))
+                    ans.extend(self._dependencies_for(dependency, origin))
 
         return sorted(ans)
