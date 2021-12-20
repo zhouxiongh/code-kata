@@ -20,6 +20,21 @@ class TestCase(unittest.TestCase):
         self.assertEqual(["F", "H"], dep.dependencies_for("E"))
         self.assertEqual(["H"], dep.dependencies_for("F"))
 
+    def test_circle(self):
+        dep = Dependencies()
+        dep.add_direct("A", "B")
+        dep.add_direct("B", "C")
+        dep.add_direct("C", "A")
+
+        with self.assertRaises(TypeError):
+            dep.dependencies_for("A")
+
+        with self.assertRaises(TypeError):
+            dep.dependencies_for("B")
+
+        with self.assertRaises(TypeError):
+            dep.dependencies_for("C")
+
 
 if __name__ == "__main__":
     unittest.main()
